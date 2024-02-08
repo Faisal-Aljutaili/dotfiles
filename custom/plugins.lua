@@ -1,5 +1,16 @@
 local plugins = {
   {
+    "Faisal-Aljutaili/OpenInPopUp.nvim",
+    init = function()
+      vim.api.nvim_set_keymap(
+        "n",
+        "<Leader>go",
+        '<cmd>lua require("OpenInPopUp").new{}:open("lazygit", { width = 200, height = 150 })<cr>',
+        { noremap = true, silent = true }
+      )
+    end,
+  },
+  {
     "Faisal-Aljutaili/laravelTinker.nvim",
     init = function()
       vim.api.nvim_set_keymap(
@@ -17,30 +28,223 @@ local plugins = {
     end,
   },
   {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim", -- required
-      "sindrets/diffview.nvim", -- optional - Diff integration
-
-      "nvim-telescope/telescope.nvim", -- optional
-    },
-    config = true,
-    init = function()
-      vim.api.nvim_set_keymap("n", "<leader>go", ':lua require("neogit").open()<CR>', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap(
-        "n",
-        "<leader>gc",
-        ':lua require("neogit").open({ "commit" })<CR>',
-        { noremap = true, silent = true }
-      )
-      vim.api.nvim_set_keymap(
-        "n",
-        "<leader>gc",
-        ':lua require("neogit").open({ cwd = "~" })<CR>',
-        { noremap = true, silent = true }
-      )
+    "nvim-neorg/neorg",
+    lazy = false,
+    build = ":Neorg sync-parsers",
+    -- tag = "*",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("neorg").setup {
+        load = {
+          ["core.defaults"] = {},  -- Loads default behaviour
+          ["core.concealer"] = {}, -- Adds pretty icons to your documents
+          ["core.dirman"] = {      -- Manages Neorg workspaces
+            config = {
+              workspaces = {
+                notes = "~/neorg/notes",
+                work = "~/neorg/work",
+              },
+            },
+          },
+        },
+      }
     end,
   },
+  {
+    "folke/trouble.nvim",
+    cmd = { "TroubleToggle", "Trouble" },
+    opts = { use_diagnostic_signs = true },
+    keys = {
+      { "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>",  desc = "Document Diagnostics (Trouble)" },
+      { "<leader>xX", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics (Trouble)" },
+      { "<leader>xL", "<cmd>TroubleToggle loclist<cr>",               desc = "Location List (Trouble)" },
+      { "<leader>xQ", "<cmd>TroubleToggle quickfix<cr>",              desc = "Quickfix List (Trouble)" },
+      {
+        "[q",
+        function()
+          if require("trouble").is_open() then
+            require("trouble").previous { skip_groups = true, jump = true }
+          else
+            local ok, err = pcall(vim.cmd.cprev)
+            if not ok then
+              vim.notify(err, vim.log.levels.ERROR)
+            end
+          end
+        end,
+        desc = "Previous trouble/quickfix item",
+      },
+      {
+        "]q",
+        function()
+          if require("trouble").is_open() then
+            require("trouble").next { skip_groups = true, jump = true }
+          else
+            local ok, err = pcall(vim.cmd.cnext)
+            if not ok then
+              vim.notify(err, vim.log.levels.ERROR)
+            end
+          end
+        end,
+        desc = "Next trouble/quickfix item",
+      },
+    },
+  },
+  {
+    "gbprod/yanky.nvim",
+    dependencies = { { "kkharji/sqlite.lua", enabled = not jit.os:find "Windows" } },
+    opts = {
+      highlight = { timer = 250 },
+      ring = { storage = jit.os:find "Windows" and "shada" or "sqlite" },
+    },
+    keys = {
+      -- stylua: ignore
+      { "<leader>p", function() require("telescope").extensions.yank_history.yank_history({}) end, desc = "Open Yank History" },
+      {
+        "y",
+        "<Plug>(YankyYank)",
+        mode = { "n", "x" },
+        desc = "Yank text",
+      },
+      {
+        "p",
+        "<Plug>(YankyPutAfter)",
+        mode = { "n", "x" },
+        desc = "Put yanked text after cursor",
+      },
+      {
+        "P",
+        "<Plug>(YankyPutBefore)",
+        mode = { "n", "x" },
+        desc = "Put yanked text before cursor",
+      },
+      {
+        "gp",
+        "<Plug>(YankyGPutAfter)",
+        mode = { "n", "x" },
+        desc = "Put yanked text after selection",
+      },
+      {
+        "gP",
+        "<Plug>(YankyGPutBefore)",
+        mode = { "n", "x" },
+        desc = "Put yanked text before selection",
+      },
+      {
+        "[y",
+        "<Plug>(YankyCycleForward)",
+        desc = "Cycle forward through yank history",
+      },
+      {
+        "]y",
+        "<Plug>(YankyCycleBackward)",
+        desc = "Cycle backward through yank history",
+      },
+      {
+        "]p",
+        "<Plug>(YankyPutIndentAfterLinewise)",
+        desc = "Put indented after cursor (linewise)",
+      },
+      {
+        "[p",
+        "<Plug>(YankyPutIndentBeforeLinewise)",
+        desc = "Put indented before cursor (linewise)",
+      },
+      {
+        "]P",
+        "<Plug>(YankyPutIndentAfterLinewise)",
+        desc = "Put indented after cursor (linewise)",
+      },
+      {
+        "[P",
+        "<Plug>(YankyPutIndentBeforeLinewise)",
+        desc = "Put indented before cursor (linewise)",
+      },
+      {
+        ">p",
+        "<Plug>(YankyPutIndentAfterShiftRight)",
+        desc = "Put and indent right",
+      },
+      {
+        "<p",
+        "<Plug>(YankyPutIndentAfterShiftLeft)",
+        desc = "Put and indent left",
+      },
+      {
+        ">P",
+        "<Plug>(YankyPutIndentBeforeShiftRight)",
+        desc = "Put before and indent right",
+      },
+      {
+        "<P",
+        "<Plug>(YankyPutIndentBeforeShiftLeft)",
+        desc = "Put before and indent left",
+      },
+      {
+        "=p",
+        "<Plug>(YankyPutAfterFilter)",
+        desc = "Put after applying a filter",
+      },
+      {
+        "=P",
+        "<Plug>(YankyPutBeforeFilter)",
+        desc = "Put before applying a filter",
+      },
+    },
+  },
+  {
+    "kristijanhusak/vim-dadbod-ui",
+    dependencies = {
+      { "tpope/vim-dadbod",                     lazy = true },
+      { "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
+    },
+    cmd = {
+      "DBUI",
+      "DBUIToggle",
+      "DBUIAddConnection",
+      "DBUIFindBuffer",
+    },
+    init = function()
+      -- Your DBUI configuration
+      vim.g.db_ui_use_nerd_fonts = 1
+    end,
+  },
+  {
+    "mg979/vim-visual-multi",
+    lazy = false,
+    init = function()
+      vim.g.VM_maps = {
+        ["Find Under"] = "<C-b>",
+        ["Find Subword Under"] = "<C-b>",
+        ["Select Cursor Down"] = "<M-C-Down>",
+        ["Select Cursor Up"] = "<M-C-Up>",
+      }
+    end,
+  },
+  -- {
+  --   "NeogitOrg/neogit",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim", -- required
+  --     "sindrets/diffview.nvim", -- optional - Diff integration
+  --
+  --     "nvim-telescope/telescope.nvim", -- optional
+  --   },
+  --   config = true,
+  --   init = function()
+  --     vim.api.nvim_set_keymap("n", "<leader>go", ':lua require("neogit").open()<CR>', { noremap = true, silent = true })
+  --     vim.api.nvim_set_keymap(
+  --       "n",
+  --       "<leader>gc",
+  --       ':lua require("neogit").open({ "commit" })<CR>',
+  --       { noremap = true, silent = true }
+  --     )
+  --     vim.api.nvim_set_keymap(
+  --       "n",
+  --       "<leader>gc",
+  --       ':lua require("neogit").open({ cwd = "~" })<CR>',
+  --       { noremap = true, silent = true }
+  --     )
+  --   end,
+  -- },
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -109,13 +313,107 @@ local plugins = {
   {
     "nvimdev/dashboard-nvim",
     event = "VimEnter",
+    init = function()
+      vim.g.dashboard_custom_header = {}
+    end,
     config = function()
       require("dashboard").setup {
-        -- config
+        theme = "doom",
+        config = {
+          header = {
+            "",
+            -- "                                                    .   \\",
+            -- "                                                    :    .",
+            -- "                                                    |     .",
+            -- "                                                    |      :",
+            -- "                                                    |      |",
+            -- "                                                    |      |",
+            -- "                                                    |      |",
+            -- "  ..._  ___                                         |    |",
+            -- " `.\"\".\"`''''\"--..___",
+            -- ' ,-.  \\             """-...__         _____________/    |',
+            -- ' / ` " \'                    `"""""                  .',
+            -- " \\                                                      L",
+            -- " (>                                                      \\",
+            -- "/                                                         \\",
+            -- "\\    ___..---.                                            L",
+            -- " `--'         '.                                           \\",
+            -- "                 .                                           \\_",
+            -- "                _/`.                                           `.._",
+            -- "             .'     -.                                             `.",
+            -- "            /     __.-Y     /''''''-...___,...--------.._            |",
+            -- "           /   _.\"    |    /                ' .      \\   '---..._    |",
+            -- "          /   /      /    /                _,. '    ,/           |   |",
+            -- "          \\_,'     _.'   /              /''     _,-'            _|   |",
+            -- "                  '     /               `-----''               /     |",
+            -- "                  `...-'     dp                                `...-'",
+            "           ▄ ▄                   ",
+            "       ▄   ▄▄▄     ▄ ▄▄▄ ▄ ▄     ",
+            "       █ ▄ █▄█ ▄▄▄ █ █▄█ █ █     ",
+            "    ▄▄ █▄█▄▄▄█ █▄█▄█▄▄█▄▄█ █     ",
+            "  ▄ █▄▄█ ▄ ▄▄ ▄█ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄  ",
+            "  █▄▄▄▄ ▄▄▄ █ ▄ ▄▄▄ ▄ ▄▄▄ ▄ ▄ █ ▄",
+            "▄ █ █▄█ █▄█ █ █ █▄█ █ █▄█ ▄▄▄ █ █",
+            "█▄█ ▄ █▄▄█▄▄█ █ ▄▄█ █ ▄ █ █▄█▄█ █",
+            "    █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█ █▄█▄▄▄█    ",
+            "|| __     ||",
+            "||=\\_`\\=||",
+            "|| (__/ ||",
+            '||  | | :-"""-.',
+            "||==| \\/-=-.   \\",
+            "||  |(_|o o/   |_",
+            '||   \\/ "  \\   ,_)',
+            "||====\\ ^  /__/",
+            "||     ;--'  `-.",
+            "||    /      .  \\",
+            "||===;        \\  \\",
+            "||   |         | |",
+            "|| .-\\ '     _/_/",
+            "|:'  _;.    (_  \\",
+            "/  .'  `;\\   \\_/",
+            "|_ /      |||  |\\\\",
+            "/  _)=====|||  | ||",
+            "/  /|      ||/  / //",
+            "\\_||      ( `-/ ||",
+            "   ||======/  /  \\\\ .-.",
+            "   ||      \\_/    \\'-'/",
+            '   ||      ||      `"`',
+            "   ||======||",
+            "   ||      ||",
+            "",
+            "",
+            "",
+          },
+          center = {
+            { icon = "  ", desc = "find word", key = "fw", action = "Telescope live_grep" },
+            { icon = "  ", desc = "Find Files", key = "ff", action = "Telescope find_files" },
+            { icon = "  ", desc = "Recent Files", key = "fo", action = "Telescope oldfiles" },
+            {
+              icon = "  ",
+              desc = "lazygit",
+              key = "go",
+              action = ':lua require("OpenInPopUp").new{}:open("lazygit", { width = 200, height = 150 })',
+            },
+            { icon = "  ", desc = "open work notes", key = "wn", action = "Neorg workspace work" },
+            { icon = "  ", desc = "open personal notes", key = "pn", action = "Neorg workspace notes" },
+            { icon = "󰒲  ", desc = "Plugins", key = "pl", action = "Lazy" },
+            { icon = "⛁  ", desc = "DataBase", key = "db", action = "DBUI" },
+            -- { icon = "  ", desc = "tests", key = "to", action = "lua require("neotest").output.open({enter = true})<CR>" },
+          },
+          footer = {},
+          --   "███████╗░█████╗░██╗░██████╗░█████╗░██╗░░░░░      ───▄▄▄       ",
+          --   "██╔════╝██╔══██╗██║██╔════╝██╔══██╗██║░░░░░      ─▄▀░▄░▀▄     ",
+          --   "█████╗░░███████║██║╚█████╗░███████║██║░░░░░      ─█░█▄▀░█     ",
+          --   "██╔══╝░░██╔══██║██║░╚═══██╗██╔══██║██║░░░░░      ─█░▀▄▄▀█▄█▄▀ ",
+          --   "██║░░░░░██║░░██║██║██████╔╝██║░░██║███████╗     ▄▄█▄▄▄▄███▀   ",
+          --   "╚═╝░░░░░╚═╝░░╚═╝╚═╝╚═════╝░╚═╝░░╚═╝╚══════╝                   ",
+          -- },
+        },
       }
     end,
     dependencies = { { "nvim-tree/nvim-web-devicons" } },
   },
+
   {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -126,7 +424,7 @@ local plugins = {
       }
     end,
   },
-  { "jwalton512/vim-blade", lazy = false },
+  { "jwalton512/vim-blade",    lazy = false },
   {
     "ray-x/lsp_signature.nvim",
     event = "VeryLazy",
