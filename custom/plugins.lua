@@ -288,6 +288,7 @@ local plugins = {
         "stylua",
         "sqlls",
         "dartls",
+        "rust-analyzer",
       },
     },
   },
