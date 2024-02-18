@@ -1,3 +1,4 @@
+vim.opt.conceallevel = 2
 local plugins = {
   {
     "Faisal-Aljutaili/OpenInPopUp.nvim",
@@ -44,30 +45,68 @@ local plugins = {
         },
         auto_trigger = true,
       },
+    },
+  },
+  -- {
+  --   "nvim-neorg/neorg",
+  --   lazy = false,
+  --   build = ":Neorg sync-parsers",
+  --   -- tag = "*",
+  --   dependencies = { "nvim-lua/plenary.nvim" },
+  --   config = function()
+  --     require("neorg").setup {
+  --       load = {
+  --         ["core.defaults"] = {},  -- Loads default behaviour
+  --         ["core.concealer"] = {}, -- Adds pretty icons to your documents
+  --         ["core.dirman"] = {      -- Manages Neorg workspaces
+  --           config = {
+  --             workspaces = {
+  --               notes = "~/neorg/notes",
+  --               work = "~/neorg/work",
+  --             },
+  --           },
+  --         },
+  --       },
+  --     }
+  --   end,
+  -- },
+  {
+    "epwalsh/obsidian.nvim",
+    version = "*", -- recommended, use latest release instead of latest commit
+    lazy = false,
+    ft = "markdown",
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
+    --   "BufReadPre path/to/my-vault/**.md",
+    --   "BufNewFile path/to/my-vault/**.md",
+    -- },
+    dependencies = {
+      -- Required.
+      "nvim-lua/plenary.nvim",
 
-    }
+      -- see below for full list of optional dependencies 👇
+    },
+    opts = {
+      workspaces = {
+        {
+          name = "personal",
+          path = "~/vaults/personal",
+        },
+        {
+          name = "work",
+          path = "~/vaults/work",
+        },
+      },
+    },
   },
   {
-    "nvim-neorg/neorg",
-    lazy = false,
-    build = ":Neorg sync-parsers",
-    -- tag = "*",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("neorg").setup {
-        load = {
-          ["core.defaults"] = {},  -- Loads default behaviour
-          ["core.concealer"] = {}, -- Adds pretty icons to your documents
-          ["core.dirman"] = {      -- Manages Neorg workspaces
-            config = {
-              workspaces = {
-                notes = "~/neorg/notes",
-                work = "~/neorg/work",
-              },
-            },
-          },
-        },
-      }
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function()
+      vim.fn["mkdp#util#install"]()
     end,
   },
   {
@@ -289,6 +328,7 @@ local plugins = {
         "sqlls",
         "dartls",
         "rust-analyzer",
+        "marksman",
       },
     },
   },
@@ -300,6 +340,7 @@ local plugins = {
     {
       "nvim-lualine/lualine.nvim",
       lazy = false,
+      options = { theme = 'gruvbox' },
       dependencies = {
         "nvim-tree/nvim-web-devicons",
       },
@@ -415,8 +456,6 @@ local plugins = {
               key = "go",
               action = ':lua require("OpenInPopUp").new{}:open("lazygit", { width = 200, height = 150 })',
             },
-            { icon = "  ", desc = "open work notes", key = "wn", action = "Neorg workspace work" },
-            { icon = "  ", desc = "open personal notes", key = "pn", action = "Neorg workspace notes" },
             { icon = "󰒲  ", desc = "Plugins", key = "pl", action = "Lazy" },
             { icon = "⛁  ", desc = "DataBase", key = "db", action = "DBUI" },
             -- { icon = "  ", desc = "tests", key = "to", action = "lua require("neotest").output.open({enter = true})<CR>" },

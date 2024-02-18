@@ -49,6 +49,7 @@ require("lspconfig").jedi_language_server.setup {}
 require("lspconfig").sqlls.setup {}
 require'lspconfig'.dartls.setup{}
 require'lspconfig'.rust_analyzer.setup{}
+require'lspconfig'.marksman.setup{}
 
 
 -- Without the loop, you would have to manually set up each LSP

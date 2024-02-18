@@ -12,13 +12,15 @@ feh --bg-fill "$wallpaper_path"
 
 # Function to update the root window's name with the current date
 update_root_window() {
-    xsetroot -name "$(date)"
+    keyboard_layout=$(setxkbmap -query | awk '/layout/{print $2}')
+    xsetroot -name "$(date) | $(acpi --battery) | $keyboard_layout | ﷽"
 }
+
 
 # Update the root window's name every minute
 while :; do
     update_root_window
-    sleep 1m
+    sleep 1s
 done &
 
 # Launch DWM

@@ -5,8 +5,8 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "CaskaydiaCove Nerd Font:pixelsize=15:antialias=true:autohint=true";
-static char *font2[] = { "Hack Nerd Font:pixelsize=13:antialias=true:autohint=true","Dejavu Sans Mono:pixelsize=13:antialias=true:autohint=true"," Amiri:pixelsize=15:antialias=true:autohint=true","symbola:pixelsize=13:antialias=true:autohint=true" };
+static char *font = "Hack Nerd Font:pixelsize=15:antialias=true:autohint=true";
+static char *font2[] = { "CaskaydiaCove Nerd Font:pixelsize=13:antialias=true:autohint=true","Dejavu Sans Mono:pixelsize=13:antialias=true:autohint=true"," Amiri:pixelsize=15:antialias=true:autohint=true","symbola:pixelsize=13:antialias=true:autohint=true" };
 static int borderpx = 2;
 
 /*
