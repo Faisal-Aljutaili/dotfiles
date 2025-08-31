@@ -28,25 +28,25 @@ local plugins = {
       )
     end,
   },
-  {
-    "zbirenbaum/copilot.lua",
-    -- Lazy load when event occurs. Events are triggered
-    -- as mentioned in:
-    -- https://vi.stackexchange.com/a/4495/20389
-    event = "InsertEnter",
-    -- You can also have it load at immediately at
-    -- startup by commenting above and uncommenting below:
-    -- lazy = false
-    opts = {
-      suggestion = {
-        enabled = true,
-        keymap = {
-          accept = "<C-y>",
-        },
-        auto_trigger = true,
-      },
-    },
-  },
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   -- Lazy load when event occurs. Events are triggered
+  --   -- as mentioned in:
+  --   -- https://vi.stackexchange.com/a/4495/20389
+  --   event = "InsertEnter",
+  --   -- You can also have it load at immediately at
+  --   -- startup by commenting above and uncommenting below:
+  --   -- lazy = false
+  --   opts = {
+  --     suggestion = {
+  --       enabled = true,
+  --       keymap = {
+  --         accept = "<C-y>",
+  --       },
+  --       auto_trigger = true,
+  --     },
+  --   },
+  -- },
   -- {
   --   "nvim-neorg/neorg",
   --   lazy = false,
@@ -70,37 +70,37 @@ local plugins = {
   --     }
   --   end,
   -- },
-  {
-    "epwalsh/obsidian.nvim",
-    version = "*", -- recommended, use latest release instead of latest commit
-    lazy = false,
-    ft = "markdown",
-    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-    -- event = {
-    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-    --   "BufReadPre path/to/my-vault/**.md",
-    --   "BufNewFile path/to/my-vault/**.md",
-    -- },
-    dependencies = {
-      -- Required.
-      "nvim-lua/plenary.nvim",
-
-      -- see below for full list of optional dependencies 👇
-    },
-    opts = {
-      workspaces = {
-        {
-          name = "personal",
-          path = "~/vaults/personal",
-        },
-        {
-          name = "work",
-          path = "~/vaults/work",
-        },
-      },
-    },
-  },
+  -- {
+  --   "epwalsh/obsidian.nvim",
+  --   version = "*", -- recommended, use latest release instead of latest commit
+  --   lazy = false,
+  --   ft = "markdown",
+  --   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+  --   -- event = {
+  --   --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+  --   --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
+  --   --   "BufReadPre path/to/my-vault/**.md",
+  --   --   "BufNewFile path/to/my-vault/**.md",
+  --   -- },
+  --   dependencies = {
+  --     -- Required.
+  --     "nvim-lua/plenary.nvim",
+  --
+  --     -- see below for full list of optional dependencies 👇
+  --   },
+  --   opts = {
+  --     workspaces = {
+  --       {
+  --         name = "personal",
+  --         path = "~/vaults/personal",
+  --       },
+  --       {
+  --         name = "work",
+  --         path = "~/vaults/work",
+  --       },
+  --     },
+  --   },
+  -- },
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
@@ -114,10 +114,10 @@ local plugins = {
     cmd = { "TroubleToggle", "Trouble" },
     opts = { use_diagnostic_signs = true },
     keys = {
-      { "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>",  desc = "Document Diagnostics (Trouble)" },
+      { "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics (Trouble)" },
       { "<leader>xX", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics (Trouble)" },
-      { "<leader>xL", "<cmd>TroubleToggle loclist<cr>",               desc = "Location List (Trouble)" },
-      { "<leader>xQ", "<cmd>TroubleToggle quickfix<cr>",              desc = "Quickfix List (Trouble)" },
+      { "<leader>xL", "<cmd>TroubleToggle loclist<cr>", desc = "Location List (Trouble)" },
+      { "<leader>xQ", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix List (Trouble)" },
       {
         "[q",
         function()
@@ -253,7 +253,7 @@ local plugins = {
   {
     "kristijanhusak/vim-dadbod-ui",
     dependencies = {
-      { "tpope/vim-dadbod",                     lazy = true },
+      { "tpope/vim-dadbod", lazy = true },
       { "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
     },
     cmd = {
@@ -305,34 +305,6 @@ local plugins = {
   --   end,
   -- },
   {
-    "neovim/nvim-lspconfig",
-    config = function()
-      require "plugins.configs.lspconfig"
-      require "custom.configs.lspconfig"
-    end,
-  },
-  {
-    "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = {
-        "eslint-lsp",
-        "lua-language-server",
-        "jedi-language-server",
-        "intelephense",
-        "docker-compose-language-service",
-        "dockerfile-language-server",
-        "html-lsp",
-        "prettier",
-        "css-lsp",
-        "stylua",
-        "sqlls",
-        "dartls",
-        "rust-analyzer",
-        "marksman",
-      },
-    },
-  },
-  {
     "ccaglak/larago.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -340,7 +312,7 @@ local plugins = {
     {
       "nvim-lualine/lualine.nvim",
       lazy = false,
-      options = { theme = 'gruvbox' },
+      options = { theme = "gruvbox" },
       dependencies = {
         "nvim-tree/nvim-web-devicons",
       },
@@ -348,18 +320,24 @@ local plugins = {
     },
   },
   { "f-person/git-blame.nvim", lazy = false },
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --
+  --   dependencies = {
+  --     "jose-elias-alvarez/null-ls.nvim",
+  --     config = function()
+  --       require "custom.configs.null-ls"
+  --     end,
+  --   },
+  --   config = function()
+  --     require "plugins.configs.lspconfig"
+  --     require "custom.configs.lspconfig"
+  --   end,
+  -- },
   {
     "neovim/nvim-lspconfig",
-
-    dependencies = {
-      "jose-elias-alvarez/null-ls.nvim",
-      config = function()
-        require "custom.configs.null-ls"
-      end,
-    },
     config = function()
-      require "plugins.configs.lspconfig"
-      require "custom.configs.lspconfig"
+      require "configs.lspconfig"
     end,
   },
   {
@@ -484,7 +462,7 @@ local plugins = {
       }
     end,
   },
-  { "jwalton512/vim-blade",    lazy = false },
+  { "jwalton512/vim-blade", lazy = false },
   {
     "ray-x/lsp_signature.nvim",
     event = "VeryLazy",
@@ -492,6 +470,16 @@ local plugins = {
     config = function(_, opts)
       require("lsp_signature").setup(opts)
     end,
+  },
+  {
+    "rcasia/neotest-java",
+    ft = "java",
+    dependencies = {
+      "mfussenegger/nvim-jdtls",
+      "mfussenegger/nvim-dap", -- for the debugger
+      "rcarriga/nvim-dap-ui", -- recommended
+      "theHamsta/nvim-dap-virtual-text", -- recommended
+    },
   },
   {
     "nvim-neotest/neotest",
@@ -502,11 +490,13 @@ local plugins = {
       "antoinemadec/FixCursorHold.nvim",
       "theutz/neotest-pest",
       "olimorris/neotest-phpunit",
+      "nvim-neotest/nvim-nio",
     },
     config = function()
       require("neotest").setup {
         adapters = {
-          require "neotest-pest",
+          -- require "neotest-pest",
+          require "neotest-java",
           -- require("neotest-phpunit"),
         },
       }
@@ -559,5 +549,169 @@ local plugins = {
     },
     config = true,
   },
+  {
+    "nvim-java/nvim-java",
+    config = false,
+    dependencies = {
+      {
+        "neovim/nvim-lspconfig",
+        opts = {
+          servers = {
+            jdtls = {
+              -- Your custom jdtls settings goes here
+            },
+          },
+          setup = {
+            jdtls = function()
+              require("java").setup {
+                -- Your custom nvim-java configuration goes here
+                java_debug_adapter = {
+                  enable = true,
+                },
+                notifications = {
+                  dap = true,
+                },
+              }
+            end,
+          },
+        },
+      },
+    },
+  },
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = {},
+  },
+  -- {
+  --   "ibhagwan/fzf-lua",
+  --   lazy = false,
+  --   -- optional for icon support
+  --   dependencies = { "nvim-tree/nvim-web-devicons" },
+  --   -- or if using mini.icons/mini.nvim
+  --   -- dependencies = { "echasnovski/mini.icons" },
+  --   opts = {},
+  -- },
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "nvim-neotest/nvim-nio",
+      "mason-org/mason.nvim",
+      "jay-babu/mason-nvim-dap.nvim",
+      "leoluz/nvim-dap-go",
+    },
+    keys = {
+      {
+        "<F5>",
+        function()
+          require("dap").continue()
+        end,
+        desc = "Debug: Start/Continue",
+      },
+      {
+        "<F1>",
+        function()
+          require("dap").step_into()
+        end,
+        desc = "Debug: Step Into",
+      },
+      {
+        "<F2>",
+        function()
+          require("dap").step_over()
+        end,
+        desc = "Debug: Step Over",
+      },
+      {
+        "<F3>",
+        function()
+          require("dap").step_out()
+        end,
+        desc = "Debug: Step Out",
+      },
+      {
+        "<leader>br",
+        function()
+          require("dap").toggle_breakpoint()
+        end,
+        desc = "Debug: Toggle Breakpoint",
+      },
+      {
+        "<leader>B",
+        function()
+          require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ")
+        end,
+        desc = "Debug: Set Breakpoint",
+      },
+      {
+        "<F7>",
+        function()
+          require("dapui").toggle()
+        end,
+        desc = "Debug: See last session result.",
+      },
+    },
+    config = function()
+      local dap = require "dap"
+      local dapui = require "dapui"
+
+      -- Setup Mason first
+      require("mason").setup()
+      require("mason-nvim-dap").setup {
+        automatic_installation = true,
+        handlers = {},
+        ensure_installed = {
+          "javadbg",
+          "javatest",
+        },
+      }
+
+
+      -- Java Debug Adapter Configuration
+      dap.adapters.java = function(callback, config)
+        callback {
+          type = "server",
+          host = config.hostName or "127.0.0.1",
+          port = config.port or 5005,
+        }
+      end
+
+      -- Java Debug Configurations
+      dap.configurations.java = {
+        {
+          type = "java",
+          request = "attach",
+          name = "Debug (Attach) - Remote",
+          hostName = "127.0.0.1",
+          port = 5005,
+        },
+      }
+
+      -- DAP UI Setup
+      dapui.setup {
+        icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
+        controls = {
+          icons = {
+            pause = "⏸",
+            play = "▶",
+            step_into = "⏎",
+            step_over = "⏭",
+            step_out = "⏮",
+            step_back = "b",
+            run_last = "▶▶",
+            terminate = "⏹",
+            disconnect = "⏏",
+          },
+        },
+      }
+
+      -- Auto-open/close DAP UI
+      dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+      dap.listeners.before.event_terminated["dapui_config"] = dapui.close
+      dap.listeners.before.event_exited["dapui_config"] = dapui.close
+    end,
+  },
+
 }
 return plugins
