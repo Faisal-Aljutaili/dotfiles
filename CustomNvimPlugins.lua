@@ -28,6 +28,46 @@ local plugins = {
       )
     end,
   },
+  {
+    "coder/claudecode.nvim",
+    dependencies = { "folke/snacks.nvim" },
+    config = true,
+    keys = {
+      { "<leader>a", nil, desc = "AI/Claude Code" },
+      { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+      { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+      { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+      { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+      { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+      { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+      { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+      {
+        "<leader>as",
+        "<cmd>ClaudeCodeTreeAdd<cr>",
+        desc = "Add file",
+        ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+      },
+      -- Diff management
+      { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+      { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+    },
+  },
+  {
+    "adibhanna/laravel.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+    },
+    keys = {
+      { "<leader>la", ":Artisan<cr>", desc = "Laravel Artisan" },
+      { "<leader>lc", ":Composer<cr>", desc = "Composer" },
+      { "<leader>lr", ":LaravelRoute<cr>", desc = "Laravel Routes" },
+      { "<leader>lm", ":LaravelMake<cr>", desc = "Laravel Make" },
+    },
+    config = function()
+      require("laravel").setup()
+    end,
+  },
   -- {
   --   "zbirenbaum/copilot.lua",
   --   -- Lazy load when event occurs. Events are triggered
@@ -335,12 +375,6 @@ local plugins = {
   --   end,
   -- },
   {
-    "neovim/nvim-lspconfig",
-    config = function()
-      require "configs.lspconfig"
-    end,
-  },
-  {
     "ggandor/leap.nvim",
     lazy = false,
     dependencies = {
@@ -550,34 +584,103 @@ local plugins = {
     config = true,
   },
   {
-    "nvim-java/nvim-java",
-    config = false,
+    "mfussenegger/nvim-jdtls",
+    ft = "java",
     dependencies = {
-      {
-        "neovim/nvim-lspconfig",
-        opts = {
-          servers = {
-            jdtls = {
-              -- Your custom jdtls settings goes here
-            },
-          },
-          setup = {
-            jdtls = function()
-              require("java").setup {
-                -- Your custom nvim-java configuration goes here
-                java_debug_adapter = {
-                  enable = true,
-                },
-                notifications = {
-                  dap = true,
-                },
-              }
-            end,
-          },
-        },
-      },
+      "mfussenegger/nvim-dap",
+      "neovim/nvim-lspconfig",
     },
+    config = function()
+      local HOME = os.getenv "HOME"
+      local DEBUGGER_LOCATION = HOME .. "/.local/share/nvim"
+      local LOMBOK_PATH = HOME .. "/.local/share/java/lombok.jar" -- Add this
+
+      -- Debug bundles
+      local bundles = {
+        vim.fn.glob(
+          DEBUGGER_LOCATION
+            .. "/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar",
+          true
+        ),
+      }
+
+      -- Add vscode-java-test jars
+      local vscode_java_test = vim.split(vim.fn.glob(DEBUGGER_LOCATION .. "/vscode-java-test/server/*.jar", true), "\n")
+      for _, jar in ipairs(vscode_java_test) do
+        if jar ~= "" then
+          table.insert(bundles, jar)
+        end
+      end
+
+      local function jdtls_setup()
+        local jdtls = require "jdtls"
+
+        local root_dir = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" })
+
+        local config = {
+          cmd = { "jdtls", "-javaagent:" .. LOMBOK_PATH, "-Xbootclasspath/a:" .. LOMBOK_PATH },
+          root_dir = root_dir,
+          init_options = {
+            bundles = bundles,
+          },
+          on_attach = function(client, bufnr)
+            jdtls.setup_dap { hotcodereplace = "auto" }
+            -- Defer main class discovery
+            vim.defer_fn(function()
+              require("jdtls.dap").setup_dap_main_class_configs()
+            end, 3000)
+          end,
+        }
+
+        jdtls.start_or_attach(config)
+      end
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "java",
+        callback = jdtls_setup,
+      })
+    end,
   },
+  -- {
+  --   "nvim-java/nvim-java",
+  --   ft = "java",
+  --   dependencies = {
+  --     "mfussenegger/nvim-jdtls",
+  --     "neovim/nvim-lspconfig",
+  --   },
+  --   config = function()
+  --     local HOME = os.getenv "HOME"
+  --     local DEBUGGER_LOCATION = HOME .. "/.local/share/nvim"
+  --
+  --     -- Debug bundles
+  --     local bundles = {
+  --       vim.fn.glob(
+  --         DEBUGGER_LOCATION
+  --           .. "/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar",
+  --         true
+  --       ),
+  --     }
+  --
+  --     -- Add vscode-java-test jars
+  --     local vscode_java_test = vim.split(vim.fn.glob(DEBUGGER_LOCATION .. "/vscode-java-test/server/*.jar", true), "\n")
+  --     vim.list_extend(bundles, vscode_java_test)
+  --
+  --     require("java").setup {
+  --       jdtls = {
+  --         init_options = {
+  --           bundles = bundles,
+  --         },
+  --       },
+  --     }
+  --
+  --     require("lspconfig").jdtls.setup {
+  --       on_attach = function(client, bufnr)
+  --         require("jdtls").setup_dap { hotcodereplace = "auto" }
+  --         require("jdtls.dap").setup_dap_main_class_configs()
+  --       end,
+  --     }
+  --   end,
+  -- },
   {
     "pmizio/typescript-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
@@ -667,8 +770,7 @@ local plugins = {
         },
       }
 
-
-      -- Java Debug Adapter Configuration
+      -- Java Debug Adapter Configuration for remote attach
       dap.adapters.java = function(callback, config)
         callback {
           type = "server",
@@ -682,7 +784,7 @@ local plugins = {
         {
           type = "java",
           request = "attach",
-          name = "Debug (Attach) - Remote",
+          name = "Attach to Spring Boot (5005)",
           hostName = "127.0.0.1",
           port = 5005,
         },
@@ -712,6 +814,6 @@ local plugins = {
       dap.listeners.before.event_exited["dapui_config"] = dapui.close
     end,
   },
-
 }
 return plugins
+
